@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-plt.use('Agg')
+matplotlib.use('Agg')
 import random
 import numpy as np
 import torch
