@@ -98,7 +98,7 @@ def plot(filename):
     plt.savefig(filename)
 
 
-EPOCHS = 1000
+EPOCHS = 30
 DIM = 2
 START_LR = 0.1
 FINAL_LR = 0.0001
