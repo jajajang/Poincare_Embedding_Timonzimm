@@ -4,6 +4,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from tqdm import tqdm_notebook
 from torch.autograd import Variable
 from nltk.corpus import wordnet as wn
 
