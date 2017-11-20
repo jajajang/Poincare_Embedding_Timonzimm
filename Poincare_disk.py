@@ -69,7 +69,7 @@ def distance(u, v):
     return arcosh(gamma)
 
 
-def plot():
+def plot(filename):
     lhds, rhds = hypernyms[:, 0], hypernyms[:, 1]
 
     targets = set(lhd for i, lhd in enumerate(lhds) if rhds[i] == target)
@@ -93,7 +93,7 @@ def plot():
         x, y = embeddings[word2idx[n]]
         ax.plot(x, y, 'o', color='y')
         ax.text(x + 0.01, y + 0.01, n, color='b')
-    plt.show()
+    plt.savefig(filename)
 
 
 EPOCHS = 10
@@ -109,7 +109,8 @@ NEG_SAMPLES = torch.from_numpy(np.random.randint(0, len(uniq_hypernyms), size=(E
 
 bar1 = tqdm_notebook(range(EPOCHS))
 for epoch in bar1:
-    plot()
+    filename='epoch_'+str(epoch)+'.png'
+    plot(filename)
     bar2 = tqdm_notebook(hypernyms, leave=False)
     for i, (w1, w2) in enumerate(bar2):
         i_w1 = word2idx[w1]
