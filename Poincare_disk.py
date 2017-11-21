@@ -133,10 +133,7 @@ for epoch in range(EPOCHS):
             pickme=np.random.randint(0, len(uniq_hypernyms))
             if not are_you_hyper(uniq_hypernyms[pickme], uniq_hypernyms[i_w1]):
                 NEG_SAMPLES.append(pickme)
-                print pickme
-        print NEG_SAMPLES
         NEG_SAMPLES = torch.from_numpy(np.array(NEG_SAMPLES)).cuda()
-        print NEG_SAMPLES
         negs = Variable(EMBEDDINGS[NEG_SAMPLES], requires_grad=True)
         loss = torch.exp(-1 * distance(u, v)) / torch.exp(-1 * distance(u, negs)).sum()
         loss.backward()
@@ -144,9 +141,6 @@ for epoch in range(EPOCHS):
             print str(epoch)+' epoch and '+str(i)+' attempt'
         r = epoch / EPOCHS
         LR = (1 - r) * START_LR + r * FINAL_LR
-        print(hasattr(u.grad, "data")) # prints False
-        print(hasattr(v.grad, "data")) # prints False
-        print(hasattr(negs.grad, "data")) # prints False
         EMBEDDINGS[NEG_SAMPLES] -= LR * (((1 - negs.norm(dim=1) ** 2) ** 2) / 4).data.unsqueeze(
             1) * negs.grad.data
         EMBEDDINGS[i_w1] -= LR * (((1 - u.norm() ** 2) ** 2) / 4).data * u.grad.data
