@@ -134,7 +134,7 @@ for epoch in range(EPOCHS):
             if not are_you_hyper(uniq_hypernyms[pickme], uniq_hypernyms[i_w1]):
                 NEG_SAMPLES.append(pickme)
         
-        NEG_SAMPLES = torch.from_numpy(NEG_SAMPLES)
+        NEG_SAMPLES = torch.from_numpy(np.array(NEG_SAMPLES))
         negs = Variable(EMBEDDINGS[NEG_SAMPLES], requires_grad=True)
         loss = torch.exp(-1 * distance(u, v)) / torch.exp(-1 * distance(u, negs)).sum()
         loss.backward()
