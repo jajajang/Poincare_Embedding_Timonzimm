@@ -144,6 +144,9 @@ for epoch in range(EPOCHS):
             print str(epoch)+' epoch and '+str(i)+' attempt'
         r = epoch / EPOCHS
         LR = (1 - r) * START_LR + r * FINAL_LR
+        print(hasattr(u.grad, "data")) # prints False
+        print(hasattr(v.grad, "data")) # prints False
+        print(hasattr(negs.grad, "data")) # prints False
         EMBEDDINGS[NEG_SAMPLES] -= LR * (((1 - negs.norm(dim=1) ** 2) ** 2) / 4).data.unsqueeze(
             1) * negs.grad.data
         EMBEDDINGS[i_w1] -= LR * (((1 - u.norm() ** 2) ** 2) / 4).data * u.grad.data
