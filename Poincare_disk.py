@@ -95,10 +95,10 @@ START_LR = 0.1
 FINAL_LR = 0.0001
 NEG = 10
 
-EMBEDDINGS = torch.Tensor(len(uniq_hypernyms), DIM)
+EMBEDDINGS = torch.Tensor(len(uniq_hypernyms), DIM).cuda()
 nn.init.uniform(EMBEDDINGS, a=-0.001, b=0.001)
 
-NEG_SAMPLES = torch.from_numpy(np.random.randint(0, len(uniq_hypernyms), size=(EPOCHS, len(hypernyms), NEG)))
+NEG_SAMPLES = torch.from_numpy(np.random.randint(0, len(uniq_hypernyms), size=(EPOCHS, len(hypernyms), NEG))).cuda()
 
 for epoch in range(EPOCHS):
     filename='epoch_'+str(epoch)+'.png'
