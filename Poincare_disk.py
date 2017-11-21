@@ -110,7 +110,6 @@ for epoch in range(EPOCHS):
         negs = Variable(EMBEDDINGS[NEG_SAMPLES[epoch, i]], requires_grad=True)
 
         loss = torch.exp(-1 * distance(u, v)) / torch.exp(-1 * distance(u, negs)).sum()
-        bar2.set_postfix(loss=loss.data[0, 0])
         loss.backward()
         if i/1000==0:
             print i
