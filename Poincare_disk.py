@@ -69,12 +69,8 @@ def distance(u, v):
 def plot(filename):
     lhds, rhds = hypernyms[:, 0], hypernyms[:, 1]
 
-    targets = set(lhd for i, lhd in enumerate(lhds) if rhds[i] == target)
+    targets = nouns
     embeddings = EMBEDDINGS.numpy()
-
-    if len(targets) + 1 > 30:
-        targets = random.sample(targets, 30 - 1)
-    targets.append(target)
 
     fig = plt.figure(figsize=(10, 10))
     ax = plt.gca()
@@ -93,7 +89,7 @@ def plot(filename):
     plt.savefig(filename)
 
 
-EPOCHS = 30
+EPOCHS = 20
 DIM = 2
 START_LR = 0.1
 FINAL_LR = 0.0001
@@ -104,11 +100,10 @@ nn.init.uniform(EMBEDDINGS, a=-0.001, b=0.001)
 
 NEG_SAMPLES = torch.from_numpy(np.random.randint(0, len(uniq_hypernyms), size=(EPOCHS, len(hypernyms), NEG)))
 
-bar1 = tqdm_notebook(range(EPOCHS))
-for epoch in bar1:
+for epoch in range(EPOCHS):
     filename='epoch_'+str(epoch)+'.png'
     plot(filename)
-    bar2 = tqdm_notebook(hypernyms, leave=False)
+    bar2 = hypernyms
     for i, (w1, w2) in enumerate(bar2):
         i_w1 = word2idx[w1]
         i_w2 = word2idx[w2]
