@@ -111,8 +111,8 @@ for epoch in range(EPOCHS):
 
         loss = torch.exp(-1 * distance(u, v)) / torch.exp(-1 * distance(u, negs)).sum()
         loss.backward()
-        if i/1000==0:
-            print i
+        if i%1000==0:
+            print str(epoch)+' epoch and '+str(i)+' attempt'
         r = epoch / EPOCHS
         LR = (1 - r) * START_LR + r * FINAL_LR
         EMBEDDINGS[NEG_SAMPLES[epoch, i]] -= LR * (((1 - negs.norm(dim=1) ** 2) ** 2) / 4).data.unsqueeze(
