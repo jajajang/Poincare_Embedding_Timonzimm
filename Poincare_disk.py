@@ -16,12 +16,9 @@ torch.manual_seed(SEED)
 random.seed(SEED)
 np.random.seed(SEED)
 
-target = wn.synset('mammal.n.01')
 words = wn.words()
 
-nouns = set()
-for word in words:
-    nouns.update(wn.synsets(word, pos='n'))
+nouns = list(wn.all_synsets('n'))
 
 print(len(nouns), 'nouns')
 
@@ -29,13 +26,10 @@ hypernyms = []
 for noun in nouns:
     paths = noun.hypernym_paths()
     for path in paths:
-        try:
-            pos = path.index(target)
-            for i in range(pos, len(path) - 1):
-                hypernyms.append((noun, path[i]))
-        except Exception:
-            continue
-
+        for i in range(0, len(path) - 1):
+            hypernyms.append((noun, path[i]))
+            
+            
 hypernyms = np.array(list(set(hypernyms)))
 uniq_hypernyms = np.array(list(set([e for tup in hypernyms for e in tup])))
 
