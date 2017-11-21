@@ -126,8 +126,8 @@ for epoch in range(EPOCHS):
     for i, (w1, w2) in enumerate(bar2):
         i_w1 = word2idx[w1]
         i_w2 = word2idx[w2]
-        u = Variable(EMBEDDINGS[i_w1].unsqueeze(0), requires_grad=True).cuda()
-        v = Variable(EMBEDDINGS[i_w2].unsqueeze(0), requires_grad=True).cuda()
+        u = Variable(EMBEDDINGS[i_w1].unsqueeze(0), requires_grad=True)
+        v = Variable(EMBEDDINGS[i_w2].unsqueeze(0), requires_grad=True)
         NEG_SAMPLES=[i_w1]
         while len(NEG_SAMPLES)<NEG:
             pickme=np.random.randint(0, len(uniq_hypernyms))
@@ -137,7 +137,7 @@ for epoch in range(EPOCHS):
         print NEG_SAMPLES
         NEG_SAMPLES = torch.from_numpy(np.array(NEG_SAMPLES)).cuda()
         print NEG_SAMPLES
-        negs = Variable(EMBEDDINGS[NEG_SAMPLES], requires_grad=True).cuda()
+        negs = Variable(EMBEDDINGS[NEG_SAMPLES], requires_grad=True)
         loss = torch.exp(-1 * distance(u, v)) / torch.exp(-1 * distance(u, negs)).sum()
         loss.backward()
         if i%1000==0:
