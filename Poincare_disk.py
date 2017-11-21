@@ -148,10 +148,10 @@ for epoch in range(EPOCHS):
             1) * negs.grad.data
         EMBEDDINGS[i_w1] -= LR * (((1 - u.norm() ** 2) ** 2) / 4).data * u.grad.data
         EMBEDDINGS[i_w2] -= LR * (((1 - v.norm() ** 2) ** 2) / 4).data * v.grad.data
+        EMBEDDINGS = proj(EMBEDDINGS)
         if u.grad is not None:
                 u.grad.data.zero_()
         if v.grad is not None:
                 v.grad.data.zero_()
         if negs.grad is not None:
                 negs.grad.data.zero_()
-        EMBEDDINGS = proj(EMBEDDINGS)
