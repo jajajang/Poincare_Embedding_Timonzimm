@@ -133,8 +133,10 @@ for epoch in range(EPOCHS):
             pickme=np.random.randint(0, len(uniq_hypernyms))
             if not are_you_hyper(uniq_hypernyms[pickme], uniq_hypernyms[i_w1]):
                 NEG_SAMPLES.append(pickme)
-        
+                print pickme
+        print NEG_SAMPLES
         NEG_SAMPLES = torch.from_numpy(np.array(NEG_SAMPLES)).cuda()
+        print NEG_SAMPLES
         negs = Variable(EMBEDDINGS[NEG_SAMPLES], requires_grad=True).cuda()
         loss = torch.exp(-1 * distance(u, v)) / torch.exp(-1 * distance(u, negs)).sum()
         loss.backward()
