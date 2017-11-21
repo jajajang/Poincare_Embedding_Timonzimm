@@ -100,6 +100,15 @@ def plot(filename):
         ax.text(x + 0.01, y + 0.01, n, color='b')
     plt.savefig(filename)
 
+def are_you_hyper(dog, cat):
+    hyper_path_d=dog.hypernym_paths()[0]
+    similar_1=[cat.path_similarity(doggy) for doggy in hyper_path_d]
+    big_dog= max[similar_1]>0.999
+    
+    hyper_path_c=cat.hypernym_paths()[0]
+    similar_2=[dog.path_similarity(kitty) for kitty in hyper_path_c]
+    big_cat= max[similar_2]>0.999
+    return big_dog or big_cat
 
 EPOCHS = 20
 DIM = 2
@@ -110,8 +119,6 @@ NEG = 10
 EMBEDDINGS = torch.Tensor(len(uniq_hypernyms), DIM).cuda()
 nn.init.uniform(EMBEDDINGS, a=-0.001, b=0.001)
 
-NEG_SAMPLES = torch.from_numpy(np.random.randint(0, len(uniq_hypernyms), size=(EPOCHS, len(hypernyms), NEG))).cuda()
-
 for epoch in range(EPOCHS):
     filename='epoch_'+str(epoch)+'.png'
     plot(filename)
@@ -121,7 +128,14 @@ for epoch in range(EPOCHS):
         i_w2 = word2idx[w2]
         u = Variable(EMBEDDINGS[i_w1].unsqueeze(0), requires_grad=True)
         v = Variable(EMBEDDINGS[i_w2].unsqueeze(0), requires_grad=True)
-        negs = Variable(EMBEDDINGS[NEG_SAMPLES[epoch, i]], requires_grad=True)
+        NEG_SAMPLES=[i_w1]
+        NEG_SAMPLES = torch.from_numpy(np.random.randint(0, len(uniq_hypernyms), size=(EPOCHS, len(hypernyms), NEG)))
+        while len(NEG_SAMPLES)<NEG:
+            pickme=np.random.randint(0, len(uniq_hypernyms))
+            if not are_you_hyper(EMBEDDINGS[pickme], EMBEDDINGS[i_w1]):
+                NEG_SAMPLES.append[pickme]
+                
+        negs = Variable(EMBEDDINGS[NEG_SAMPLES], requires_grad=True)
         loss = torch.exp(-1 * distance(u, v)) / torch.exp(-1 * distance(u, negs)).sum()
         loss.backward()
         if i%1000==0:
