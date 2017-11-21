@@ -129,12 +129,12 @@ for epoch in range(EPOCHS):
         u = Variable(EMBEDDINGS[i_w1].unsqueeze(0), requires_grad=True)
         v = Variable(EMBEDDINGS[i_w2].unsqueeze(0), requires_grad=True)
         NEG_SAMPLES=[i_w1]
-        NEG_SAMPLES = torch.from_numpy(np.random.randint(0, len(uniq_hypernyms), size=(EPOCHS, len(hypernyms), NEG)))
         while len(NEG_SAMPLES)<NEG:
             pickme=np.random.randint(0, len(uniq_hypernyms))
             if not are_you_hyper(EMBEDDINGS[pickme], EMBEDDINGS[i_w1]):
                 NEG_SAMPLES.append[pickme]
-                
+        
+        NEG_SAMPLES = torch.from_numpy(NEG_SAMPLES)
         negs = Variable(EMBEDDINGS[NEG_SAMPLES], requires_grad=True)
         loss = torch.exp(-1 * distance(u, v)) / torch.exp(-1 * distance(u, negs)).sum()
         loss.backward()
