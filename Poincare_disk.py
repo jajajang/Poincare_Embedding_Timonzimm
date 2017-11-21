@@ -38,7 +38,8 @@ word2idx = {val: i for i, val in enumerate(uniq_hypernyms)}
 random.shuffle(hypernyms)
 
 print(len(hypernyms), 'hypernyms')
-
+lhds, rhds = hypernyms[:, 0], hypernyms[:, 1]
+targets = set(lhd for i, lhd in enumerate(lhds) if rhds[i] == target)
 
 def proj(params):
     norm = params.norm(p=2, dim=1).unsqueeze(1)
@@ -67,9 +68,11 @@ def distance(u, v):
 
 
 def plot(filename):
-    lhds, rhds = hypernyms[:, 0], hypernyms[:, 1]
+    embeddings = (EMBEDDINGS.cpu()).numpy()
 
-    targets = nouns
+    if len(targets) + 1 > 30:
+        targets = random.sample(targets, 30-1)
+    targets.append(target)
     embeddings = (EMBEDDINGS.cpu()).numpy()
 
     fig = plt.figure(figsize=(10, 10))
