@@ -131,7 +131,7 @@ for epoch in range(EPOCHS):
         NEG_SAMPLES=[i_w1]
         while len(NEG_SAMPLES)<NEG:
             pickme=np.random.randint(0, len(uniq_hypernyms))
-            if not are_you_hyper(EMBEDDINGS[pickme], EMBEDDINGS[i_w1]):
+            if not are_you_hyper(uniq_hypernyms[pickme], uniq_hypernyms[i_w1]):
                 NEG_SAMPLES.append[pickme]
         
         NEG_SAMPLES = torch.from_numpy(NEG_SAMPLES)
