@@ -35,7 +35,10 @@ hypernyms = np.array(list(set(hypernyms)))
 print(len(hypernyms), 'hypernyms')
 lhds, rhds = hypernyms[:, 0], hypernyms[:, 1]
 targets = set(lhd for i, lhd in enumerate(lhds) if rhds[i] == target)
-targets=set(list(targets).append(target))
+temp_list=list(targets)
+temp_list.append(target)
+targets=set(temp_list)
+
 print(len(targets), 'targets')
 
 hypernyms = []
