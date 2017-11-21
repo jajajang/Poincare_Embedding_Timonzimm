@@ -27,7 +27,7 @@ hypernyms = []
 for noun in nouns:
     paths = noun.hypernym_paths()
     for path in paths:
-        for i in range(0, len(path) - 1):
+        for i in range(0, len(path) - 2):
             hypernyms.append((noun, path[i]))
             
             
@@ -35,14 +35,14 @@ hypernyms = np.array(list(set(hypernyms)))
 print(len(hypernyms), 'hypernyms')
 lhds, rhds = hypernyms[:, 0], hypernyms[:, 1]
 targets = set(lhd for i, lhd in enumerate(lhds) if rhds[i] == target)
-
+targets.append(target)
 print(len(targets), 'targets')
 
 hypernyms = []
 for targ in targets:
     paths = targ.hypernym_paths()
     for path in paths:
-        for i in range(0, len(path) - 1):
+        for i in range(0, len(path) - 2):
             hypernyms.append((targ, path[i]))
 
 print(len(hypernyms), 'target hypernyms')
