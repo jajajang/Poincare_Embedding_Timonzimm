@@ -32,14 +32,25 @@ for noun in nouns:
             
             
 hypernyms = np.array(list(set(hypernyms)))
+print(len(hypernyms), 'hypernyms')
+lhds, rhds = hypernyms[:, 0], hypernyms[:, 1]
+targets = set(lhd for i, lhd in enumerate(lhds) if rhds[i] == target)
+
+print(len(targets), 'targets')
+
+hypernyms = []
+for targ in targets:
+    paths = targ.hypernym_paths()
+    for path in paths:
+        for i in range(0, len(path) - 1):
+            hypernyms.append((targ, path[i]))
+
+print(len(hypernyms), 'target hypernyms')
 uniq_hypernyms = np.array(list(set([e for tup in hypernyms for e in tup])))
 
 word2idx = {val: i for i, val in enumerate(uniq_hypernyms)}
 random.shuffle(hypernyms)
 
-print(len(hypernyms), 'hypernyms')
-lhds, rhds = hypernyms[:, 0], hypernyms[:, 1]
-targets = set(lhd for i, lhd in enumerate(lhds) if rhds[i] == target)
 
 def proj(params):
     norm = params.norm(p=2, dim=1).unsqueeze(1)
