@@ -70,7 +70,7 @@ def plot(filename):
     lhds, rhds = hypernyms[:, 0], hypernyms[:, 1]
 
     targets = nouns
-    embeddings = EMBEDDINGS.numpy()
+    embeddings = (EMBEDDINGS.cpu()).numpy()
 
     fig = plt.figure(figsize=(10, 10))
     ax = plt.gca()
