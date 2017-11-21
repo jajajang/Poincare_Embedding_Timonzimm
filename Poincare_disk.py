@@ -16,6 +16,7 @@ torch.manual_seed(SEED)
 random.seed(SEED)
 np.random.seed(SEED)
 
+target = wn.synset('mammal.n.01')
 words = wn.words()
 
 nouns = list(wn.all_synsets('n'))
