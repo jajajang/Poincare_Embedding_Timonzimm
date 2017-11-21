@@ -70,11 +70,6 @@ def distance(u, v):
 def plot(filename):
     embeddings = (EMBEDDINGS.cpu()).numpy()
 
-    if len(targets) + 1 > 30:
-        targets = random.sample(targets, 30-1)
-    targets.append(target)
-    embeddings = (EMBEDDINGS.cpu()).numpy()
-
     fig = plt.figure(figsize=(10, 10))
     ax = plt.gca()
     ax.cla()  # clear things for fresh plot
