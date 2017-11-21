@@ -114,7 +114,8 @@ for epoch in range(EPOCHS):
         loss = torch.exp(-1 * distance(u, v)) / torch.exp(-1 * distance(u, negs)).sum()
         bar2.set_postfix(loss=loss.data[0, 0])
         loss.backward()
-
+        if i/1000==0:
+            print i
         r = epoch / EPOCHS
         LR = (1 - r) * START_LR + r * FINAL_LR
         EMBEDDINGS[NEG_SAMPLES[epoch, i]] -= LR * (((1 - negs.norm(dim=1) ** 2) ** 2) / 4).data.unsqueeze(
