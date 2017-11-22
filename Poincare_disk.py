@@ -62,7 +62,7 @@ for targ in targets:
         
 print(len(hypernyms), 'target hypernyms')
 uniq_hypernyms = np.array(list(set([e for tup in hypernyms for e in tup])))
-
+target_index,=np.where(uniq_hypernyms=target)
 word2idx = {val: i for i, val in enumerate(uniq_hypernyms)}
 random.shuffle(hypernyms)
 
@@ -109,7 +109,17 @@ def plot(filename):
     for n in targets:
         x, y = embeddings[word2idx[n]]
         ax.plot(x, y, 'o', color='y')
-        ax.text(x + 0.01, y + 0.01, n, color='b')
+        temp=''
+        if word2idx[n]%50==0:
+            temp=n.lemmas()[0]
+            ax.text(x + 0.01, y + 0.01, temp.name(), color='b')
+            del temp
+        elif n==target:
+            temp=n.lemmas()[0]
+            ax.text(x + 0.01, y + 0.01, temp.name(), color='r')
+            del temp
+#        ax.text(x + 0.01, y + 0.01, n, color='b')
+        
     plt.savefig(filename)
 
 def are_you_hyper(dog, cat):
