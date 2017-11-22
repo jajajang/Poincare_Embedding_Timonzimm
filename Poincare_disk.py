@@ -147,7 +147,7 @@ for epoch in range(EPOCHS):
                 NEG_SAMPLES.append(pickme)
         NEG_SAMPLES = torch.from_numpy(np.array(NEG_SAMPLES)).cuda()
         negs = Variable(EMBEDDINGS[NEG_SAMPLES], requires_grad=True)
-        loss = torch.exp(-1 * distance(u, v)) / torch.exp(-1 * distance(u, negs)).sum()
+        loss =-torch.log(torch.exp(-1 * distance(u, v)) / torch.exp(-1 * distance(u, negs)).sum())
         loss.backward()
         if i%1000==0:
             print str(epoch)+' epoch and '+str(i)+' attempt'
