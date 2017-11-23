@@ -62,7 +62,7 @@ for targ in targets:
         
 print(len(hypernyms), 'target hypernyms')
 uniq_hypernyms = np.array(list(set([e for tup in hypernyms for e in tup])))
-target_index,=np.where(uniq_hypernyms=target)
+target_index,=np.where(uniq_hypernyms==target)
 word2idx = {val: i for i, val in enumerate(uniq_hypernyms)}
 random.shuffle(hypernyms)
 

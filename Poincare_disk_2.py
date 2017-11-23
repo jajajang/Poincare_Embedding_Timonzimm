@@ -116,7 +116,7 @@ def plot(filename):
         x=np.real(moved)
         y=np.imag(moved)
         ax.plot(x, y, 'o', color='y')
-        temp=''
+        second_=target.hyponyms()
         if word2idx[n]%50==0:
             temp=n.lemmas()[0]
             ax.text(x + 0.01, y + 0.01, temp.name(), color='b')
@@ -124,6 +124,10 @@ def plot(filename):
         elif n==target:
             temp=n.lemmas()[0]
             ax.text(x + 0.01, y + 0.01, temp.name(), color='r')
+            del temp
+        elif n in second_:
+            temp=n.lemmas()[0]
+            ax.text(x+0.01, y+0.01, temp.name(), color='g')
             del temp
 #        ax.text(x + 0.01, y + 0.01, n, color='b')
         
@@ -139,7 +143,7 @@ def are_you_hyper(dog, cat):
     big_cat= max(similar_2)>0.999
     return big_dog or big_cat
 
-EPOCHS = 20
+EPOCHS = 100
 DIM = 2
 START_LR = 0.1
 FINAL_LR = 0.0001
