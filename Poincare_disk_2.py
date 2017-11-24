@@ -137,12 +137,12 @@ def are_you_hyper(dog, cat):
     big_dog=False
     big_cat=False
     hyper_path_d=dog.hypernym_paths()
-    for path in paths:
+    for path in hyper_path_d:
         if cat in path:
             big_dog=True
 
     hyper_path_c=cat.hypernym_paths()
-    for path in paths:
+    for path in hyper_path_c:
         if dog in path:
             big_cat=True
     return big_dog or big_cat
