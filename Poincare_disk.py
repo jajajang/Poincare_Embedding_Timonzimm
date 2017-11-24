@@ -118,6 +118,10 @@ def plot(filename):
             temp=n.lemmas()[0]
             ax.text(x + 0.01, y + 0.01, temp.name(), color='r')
             del temp
+        elif n in target.hyponyms():
+            temp=n.lemmas()[0]
+            ax.text(x+0.01, y+0.01, temp.name(), color='g')
+            del temp
 #        ax.text(x + 0.01, y + 0.01, n, color='b')
         
     plt.savefig(filename)
@@ -154,7 +158,7 @@ for epoch in range(EPOCHS):
         i_w2 = word2idx[w2]
         u = Variable(EMBEDDINGS[i_w1].unsqueeze(0), requires_grad=True)
         v = Variable(EMBEDDINGS[i_w2].unsqueeze(0), requires_grad=True)
-        NEG_SAMPLES=[i_w1]
+        NEG_SAMPLES=[]
         while len(NEG_SAMPLES)<NEG:
             pickme=np.random.randint(0, len(uniq_hypernyms))
             if not are_you_hyper(uniq_hypernyms[pickme], uniq_hypernyms[i_w1]):
