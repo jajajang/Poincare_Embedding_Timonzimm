@@ -134,14 +134,19 @@ def plot(filename):
     plt.savefig(filename)
 
 def are_you_hyper(dog, cat):
-    hyper_path_d=dog.hypernym_paths()[0]
-    similar_1=[cat.path_similarity(doggy) for doggy in hyper_path_d]
-    big_dog= max(similar_1)>0.999
-    
-    hyper_path_c=cat.hypernym_paths()[0]
-    similar_2=[dog.path_similarity(kitty) for kitty in hyper_path_c]
-    big_cat= max(similar_2)>0.999
+    big_dog=False
+    big_cat=False
+    hyper_path_d=dog.hypernym_paths()
+    for path in paths:
+        if cat in path:
+            big_dog=True
+
+    hyper_path_c=cat.hypernym_paths()
+    for path in paths:
+        if dog in path:
+            big_cat=True
     return big_dog or big_cat
+
 
 EPOCHS = 100
 DIM = 2
