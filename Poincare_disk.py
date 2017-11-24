@@ -130,12 +130,12 @@ def are_you_hyper(dog, cat):
     big_dog=False
     big_cat=False
     hyper_path_d=dog.hypernym_paths()
-    for path in paths:
+    for path in hyper_path_d:
         if cat in path:
             big_dog=True
 
     hyper_path_c=cat.hypernym_paths()
-    for path in paths:
+    for path in hyper_path_c:
         if dog in path:
             big_cat=True
     return big_dog or big_cat
@@ -176,9 +176,6 @@ for epoch in range(EPOCHS):
         EMBEDDINGS[i_w1] -= LR * (((1 - u.norm() ** 2) ** 2) / 4).data * u.grad.data
         EMBEDDINGS[i_w2] -= LR * (((1 - v.norm() ** 2) ** 2) / 4).data * v.grad.data
         EMBEDDINGS = proj(EMBEDDINGS)
-        if u.grad is not None:
-                u.grad.data.zero_()
-        if v.grad is not None:
-                v.grad.data.zero_()
-        if negs.grad is not None:
-                negs.grad.data.zero_()
+        u.grad.data.zero_()
+        v.grad.data.zero_()
+        negs.grad.data.zero_()
