@@ -34,7 +34,6 @@ for noun in nouns:
             del temp_targ
             
 
-hypernyms = list(set(hypernyms))
 print(len(hypernyms), 'hypernyms')
 lhds, rhds = hypernyms[:, 0], hypernyms[:, 1]
 targets = set(lhds+rhds)
