@@ -27,41 +27,22 @@ hypernyms = []
 for noun in nouns:
     paths = noun.hypernym_paths()
     for path in paths:
-        for i in range(0, len(path) - 1):
-            hypernyms.append((noun, path[i]))
-            
-            
+        if target in path:
+            temp_targ=path.index(target)
+            for i in range(temp_targ, len(path) - 1):
+                hypernyms.append((noun, path[i]))
+            del temp_targ
             
 
 hypernyms = np.array(list(set(hypernyms)))
 print(len(hypernyms), 'hypernyms')
 lhds, rhds = hypernyms[:, 0], hypernyms[:, 1]
-targets = set(lhd for i, lhd in enumerate(lhds) if rhds[i] == target)
-temp_list=list(targets)
-temp_list.append(target)
-targets=set(temp_list)
-del temp_list
+targets = set(lhds+rhds)
 
 print(len(targets), 'targets')
 
-isTargetHere=False
-hypernyms = []
-for targ in targets:
-    paths = targ.hypernym_paths()
-    for path in paths:
-        isTargetHere=False
-        _temp_hyp=[]
-        for i in range(2, len(path)):
-            _temp_hyp.append((targ, path[len(path)-i]))
-            if path[len(path)-i]==target:
-                isTargetHere=True
-                hypernyms=hypernyms+_temp_hyp
-        del _temp_hyp
-        
-
-        
 print(len(hypernyms), 'target hypernyms')
-uniq_hypernyms = np.array(list(set([e for tup in hypernyms for e in tup])))
+uniq_hypernyms = np.array(list(targets))
 target_index,=np.where(uniq_hypernyms==target)
 word2idx = {val: i for i, val in enumerate(uniq_hypernyms)}
 random.shuffle(hypernyms)
