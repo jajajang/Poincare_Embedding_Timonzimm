@@ -140,7 +140,7 @@ for epoch in range(EPOCHS):
         NEG_SAMPLES=[]
         while len(NEG_SAMPLES)<NEG:
             pickme=np.random.randint(0, len(uniq_hypernyms))
-            if (not are_you_hyper(uniq_hypernyms[pickme], uniq_hypernyms[i_w1])) and i_w1==pickme :
+            if (not are_you_hyper(uniq_hypernyms[pickme], uniq_hypernyms[i_w1])) and (not i_w1==pickme) :
                 NEG_SAMPLES.append(pickme)
         NEG_SAMPLES = torch.from_numpy(np.array(NEG_SAMPLES)).cuda()
         negs = Variable(EMBEDDINGS[NEG_SAMPLES], requires_grad=True)
