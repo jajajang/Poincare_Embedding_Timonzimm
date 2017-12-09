@@ -40,15 +40,17 @@ print(len(targets), 'targets')
 
 print(len(hypernyms), 'target hypernyms')
 uniq_hypernyms = np.array(list(targets))
-target_index,=np.where(uniq_hypernyms==target)
+target_index=list(targets).index(target)
 word2idx = {val: i for i, val in enumerate(uniq_hypernyms)}
 random.shuffle(hypernyms)
 
 
 def proj(params):
     norm = params.norm(p=2, dim=1).unsqueeze(1)
-    norm[norm < 1] = 1 + EPS
-    params = params.div(norm) - EPS
+    for i, normy in enumerate(norm):
+	if normy.numpy()>1:
+		param[i]=param[i]/(normy+EPS)
+
     return params
 
 
@@ -72,6 +74,7 @@ def distance(u, v):
 
 #want to calculate isometry which moves 0 to v
 def move(a,v):
+    embeddings = (EMBEDDINGS.cpu()).numpy()
     targ_x, targ_y=embeddings[word2idx[a]]
     z=complex(targ_x,targ_y)
     temp_x, temp_y = embeddings[word2idx[v]]
@@ -83,15 +86,13 @@ def move(a,v):
 
 def plot(filename):
     embeddings = (EMBEDDINGS.cpu()).numpy()
-
     targets_ = ['mammal.n.01', 'beagle.n.01', 'canine.n.02', 'german_shepherd.n.01',
                'collie.n.01', 'border_collie.n.01',
                'carnivore.n.01', 'tiger.n.02', 'tiger_cat.n.01', 'domestic_cat.n.01',
                'squirrel.n.01', 'finback.n.01', 'rodent.n.01', 'elk.n.01',
                'homo_sapiens.n.01', 'orangutan.n.01', 'bison.n.01', 'antelope.n.01',
                'even-toed_ungulate.n.01', 'ungulate.n.01', 'elephant.n.01', 'rhinoceros.n.01',
-               'odd-toed_ungulate.n.01', 'mustang.n.01', 'liger.n.01', 'lion.n.01', 'cat.n.01', 'dog.n.01']
-
+               'odd-toed_ungulate.n.01', 'mustang.n.01', 'liger.n.01', 'lion.n.01', 'cat.n.01', 		'dog.n.01']
     fig = plt.figure(figsize=(10, 10))
     ax = plt.gca()
     ax.cla()  # clear things for fresh plot
@@ -103,13 +104,12 @@ def plot(filename):
     ax.add_artist(circle)
 
     for n in targets_:
-        x, y = embeddings[word2idx[n]]
+        x, y = move(wn.synset(n),target)
         ax.plot(x, y, 'o', color='y')
-        temp=n.lemmas()[0]
-        ax.text(x + 0.01, y + 0.01, temp.name(), color='b')
-        del temp
+        ax.text(x + 0.01, y + 0.01, n, color='b')
 
     plt.savefig(filename)
+    plt.close()
 
 def are_you_hyper(dog, cat):
     big_dog=False
@@ -131,25 +131,25 @@ START_LR = 0.1
 FINAL_LR = 0.0001
 NEG = 10
 
-EMBEDDINGS = torch.Tensor(len(uniq_hypernyms), DIM).cuda()
+EMBEDDINGS = torch.Tensor(len(uniq_hypernyms), DIM)
 nn.init.uniform(EMBEDDINGS, a=-0.001, b=0.001)
 
-shackle = True
+bar2 = hypernyms
+
 for epoch in range(EPOCHS):
     filename='epoch_'+str(epoch)+'.png'
     plot(filename)
-    bar2 = hypernyms
     for i, (w1, w2) in enumerate(bar2):
         i_w1 = word2idx[w1]
         i_w2 = word2idx[w2]
         u = Variable(EMBEDDINGS[i_w1].unsqueeze(0), requires_grad=True)
         v = Variable(EMBEDDINGS[i_w2].unsqueeze(0), requires_grad=True)
-        NEG_SAMPLES=[]
-        while len(NEG_SAMPLES)<NEG:
+        NEG_SAMPLES_h=[]
+        while len(NEG_SAMPLES_h)<NEG:
             pickme=np.random.randint(0, len(uniq_hypernyms))
             if (not are_you_hyper(uniq_hypernyms[pickme], uniq_hypernyms[i_w1])) :
-                NEG_SAMPLES.append(pickme)
-        NEG_SAMPLES = torch.from_numpy(np.array(NEG_SAMPLES)).cuda()
+                NEG_SAMPLES_h.append(pickme)
+        NEG_SAMPLES = torch.from_numpy(np.array(NEG_SAMPLES_h))
         negs = Variable(EMBEDDINGS[NEG_SAMPLES], requires_grad=True)
         loss =-torch.log(torch.exp(-1 * distance(u, v)) / torch.exp(-1 * distance(u, negs)).sum())
         loss.backward()
@@ -160,15 +160,8 @@ for epoch in range(EPOCHS):
         EMBEDDINGS[NEG_SAMPLES] -= LR * (((1 - negs.norm(dim=1) ** 2) ** 2) / 4).data.unsqueeze(
             1) * negs.grad.data
         EMBEDDINGS[i_w1] -= LR * (((1 - u.norm() ** 2) ** 2) / 4).data * u.grad.data
-        if (not w2==target):
-            EMBEDDINGS[i_w2] -= LR * (((1 - v.norm() ** 2) ** 2) / 4).data * v.grad.data
-        EMBEDDINGS = proj(EMBEDDINGS)
-        if shackle and torch.norm(EMBEDDINGS[target_index] > 0.01):
-            print 'Alert! Mammal is escaping!'
-            print u
-            print v
-            print negs
-            shackle=False
+        EMBEDDINGS[i_w2] -= LR * (((1 - v.norm() ** 2) ** 2) / 4).data * v.grad.data        
+	EMBEDDINGS = proj(EMBEDDINGS)
         u.grad.data.zero_()
         v.grad.data.zero_()
         negs.grad.data.zero_()
